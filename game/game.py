@@ -53,7 +53,7 @@ class Game:
     # Valida cada click en cada ficha
     def click_validate(self, pos_mouse, hand):
         for piece in hand:
-            if self.collide_validate(pos_mouse, piece.get_coordinates() + (90, 130)):
+            if self.collide_validate(pos_mouse, piece.get_coordinates() + (60, 110)):
                 print(f"pulsado dentro de la ficha, {piece.value}, {piece.color}")
                 self.jugada.append(piece)
 
@@ -224,18 +224,18 @@ class Game:
     def draw(self):
         self.screen.fill((155, 155, 155))
         pygame.draw.rect(self.screen, (0, 50, 0),
-                         pygame.Rect(40, 150, 1390, 650))
-        pygame.draw.line(self.screen, (155, 155, 155), (40, 450), (1429, 450), 10)
-        game_tittle = pygame.font.SysFont('Comic Sans MS', 50)
-        piece_tittle = pygame.font.SysFont('Comic Sans MS', 35)
-        win_tittle = pygame.font.SysFont('Comic Sans MS', 35)
-        draw_text('RummyQ', game_tittle, self.screen, 1580, 80)
-        draw_text(f'Player Machine: {self.player_machine.points}', piece_tittle, self.screen, 1500, 200)
-        draw_text(f'Player Human: {self.player_human.points}', piece_tittle, self.screen, 1500, 750)
+                         pygame.Rect(40, 100, ANCHO - 400, ALTO - 300))
+        pygame.draw.line(self.screen, (155, 155, 155), (40, ALTO - 385), (ANCHO - 365, ALTO - 385), 10)
+        game_tittle = pygame.font.SysFont('Comic Sans MS', 40)
+        piece_tittle = pygame.font.SysFont('Comic Sans MS', 30)
+        win_tittle = pygame.font.SysFont('Comic Sans MS', 30)
+        draw_text('RummyQ', game_tittle, self.screen, ANCHO - 340, 40)
+        draw_text(f'Player Machine: {self.player_machine.points}', piece_tittle, self.screen, ANCHO - 350, 120)
+        draw_text(f'Player Human: {self.player_human.points}', piece_tittle, self.screen, ANCHO - 350, 600)
         if self.player_human.win:
-            draw_text(f'¡Player Human Wins!', win_tittle, self.screen, 1500, 500)
+            draw_text(f'¡Player Human Wins!', win_tittle, self.screen, ANCHO - 350, ALTO/2)
         if self.player_machine.win:
-            draw_text(f'¡Player Machine Wins!', win_tittle, self.screen, 1500, 500)
+            draw_text(f'¡Player Machine Wins!', win_tittle, self.screen, ANCHO - 350, ALTO/2)
         self.clock.tick(60)
         self.draw_pieces()
         self.draw_set_human(self.jugada_validated)
@@ -320,23 +320,23 @@ class Game:
     def draw_pieces(self):
         x, y = 40, 10
         for piece in self.player_machine.hand:
-            picture = pygame.transform.scale(piece.image, [90, 130])
+            picture = pygame.transform.scale(piece.image, [60, 110])
             self.screen.blit(picture, [x, y])
             piece.x = x
             piece.y = y
-            x += 100
-        x, y = 40, 810
+            x += 70
+        x, y = 40, 550
         for piece in self.player_human.hand:
-            picture = pygame.transform.scale(piece.image, [90, 130])
+            picture = pygame.transform.scale(piece.image, [60, 110])
             self.screen.blit(picture, [x, y])
             piece.x = x
             piece.y = y
-            x += 100
+            x += 70
         pygame.display.flip()
 
     # Funcion que dibuja las piezas de la jugada del jugador humano
     def draw_set_human(self, jugada):
-        x_set, y_set = 50, 470
+        x_set, y_set = 50, 350
         for piece in jugada:
             if x_set >= 1429:
                 x_set = 50
