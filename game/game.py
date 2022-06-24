@@ -5,6 +5,11 @@ from models.piece import Piece
 from models.player import Player
 from copy import copy, deepcopy
 import random as rnd
+import ctypes
+
+user32 = ctypes.windll.user32
+user32.SetProcessDPIAware()
+ANCHO, ALTO = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 
 # Metodo para dibujar texto en la pantalla
@@ -28,7 +33,7 @@ class Game:
         self.player_machine = Player(True)
         self.who_start()  # Funcion para definir quien inicia
         self.distribute_pieces()  # Funcion para distribuir 14 piezas a cada jugador
-        self.screen = pygame.display.set_mode((1180, 620))  # Definicion de la pantalla y su tamañp
+        self.screen = pygame.display.set_mode((ANCHO - 100, ALTO - 100))  # Definicion de la pantalla y su tamaño
         pygame.display.set_caption("Rummyq")  # Titutlo de la pantalla
         self.running = True  # Señal para saber si el juego se continua ejecutando
         self.clock = pygame.time.Clock()  # Reloj auxiliar
