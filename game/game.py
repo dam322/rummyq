@@ -352,7 +352,7 @@ class Game:
             piece.x = x
             piece.y = y
             x += 70
-        pygame.display.flip()
+
 
     # Funcion que dibuja las piezas de la jugada del jugador humano
     def draw_set_human(self, jugada):
