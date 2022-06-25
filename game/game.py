@@ -100,7 +100,7 @@ class Game:
             self.jugada.clear()
             return False
 
-
+    # Funcion que valida si el valor de una jugada es mayor a 30
     def is_greather_than_30(self, jugada):
         accum = 0
         for piece in jugada:
