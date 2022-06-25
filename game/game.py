@@ -355,12 +355,12 @@ class Game:
 
     # Funcion que dibuja las piezas de la jugada del jugador humano
     def draw_set_human(self, jugada):
-        x_set, y_set = 50, 350
+        x_set, y_set = 50, 370
         for piece in jugada:
-            if x_set >= 1429:
+            if x_set >= ANCHO - 400:  # AQUI EMPECE
                 x_set = 50
                 y_set += 110
-            if y_set > 790:
+            if y_set >= 480:
                 self.jugada_validated.clear()
                 break
             picture = pygame.transform.scale(piece.image, [60, 100])
@@ -372,13 +372,13 @@ class Game:
 
     # Funcion que dibuja las piezas de la mano de un jugador maquina
     def draw_set_machine(self, jugada):
-        x_set, y_set = 50, 150
+        x_set, y_set = 50, 170
         for piece in jugada:
-            if x_set >= 1429:
+            if x_set >= ANCHO - 400:
                 x_set = 50
                 y_set += 110
-            if y_set > 480:
-                self.jugada_validated.clear()
+            if y_set >= 280:
+                self.jugada_machine.clear()
                 break
             picture = pygame.transform.scale(piece.image, [60, 100])
             self.screen.blit(picture, [x_set, y_set])
