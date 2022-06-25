@@ -370,7 +370,6 @@ class Game:
             piece.y = y_set
             x_set += 80
 
-
     # Funcion que dibuja las piezas de la mano de un jugador maquina
     def draw_set_machine(self, jugada):
         x_set, y_set = 50, 170
