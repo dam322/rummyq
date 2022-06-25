@@ -251,6 +251,7 @@ class Game:
         draw_text('RummyQ', game_tittle, self.screen, ANCHO - 340, 40)
         draw_text(f'Player Machine: {self.player_machine.points}', piece_tittle, self.screen, ANCHO - 350, 120)
         draw_text(f'Player Human: {self.player_human.points}', piece_tittle, self.screen, ANCHO - 350, 600)
+        draw_text(f'Baraja: {len(self.baraja)}', piece_tittle, self.screen, ANCHO - 350, 200)
         if self.player_human.win:
             draw_text(f'¡Player Human Wins!', win_tittle, self.screen, ANCHO - 350, ALTO/2)
         if self.player_machine.win:
@@ -540,6 +541,8 @@ class Game:
         return accum1 - accum2
 
     # Funcion que retorna si hay un ganador, comparando el puntjae de cada jugador con el puntaje maximo definido
+    # Esto hará que la IA trate de lanzar la mayor cantidad de fichas siempre
+
     def check_win(self, change_value=False):
         win_human = self.player_human.points >= self.max_points
         win_machine = self.player_machine.points >= self.max_points
