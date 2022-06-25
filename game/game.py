@@ -80,6 +80,14 @@ class Game:
                 return False
         consecutive = self.find_missing(jugada)  # Valida si la lista es de valores consecutivos
         equals = self.find_equals(jugada)  # Valida si la lista solo tiene valores iguales
+        gt_30 = self.is_greather_than_30(jugada)
+        if self.player_human.first_turn:
+            self.player_human.first_turn = False
+            if not gt_30:
+                self.player_human.first_turn = False
+                self.jugada.clear()
+                print('La jugada del primer turno debe ser mayor a 30')
+                return False
         if consecutive or equals:  # Si alguna de las dos es verdadera, se trata de una jugada valida
             print("Está ordenada y completa")
             self.jugada_validated.extend(self.jugada)  # Se agrega a la lista de jugadas validadas
@@ -90,6 +98,16 @@ class Game:
         else:
             print("Está ordenada pero incompleta o con numeros repetidos")
             self.jugada.clear()
+            return False
+
+
+    def is_greather_than_30(self, jugada):
+        accum = 0
+        for piece in jugada:
+            accum += piece.value
+        if accum >= 30:
+            return True
+        else:
             return False
 
     # Funcion que recibe una lista de piezas y valida si todos sus valores son iguales
@@ -152,7 +170,7 @@ class Game:
                 self.crear_baraja()
                 self.distribute_pieces()
             if len(self.player_machine.hand) == 0:
-                points = self.calculate_points(self.player_machine.hand)
+                points = self.calculate_points(self.player_human.hand)
                 self.player_machine.points += points
                 self.player_human.points -= points
                 print(f'Ganó el jugador: {self.player_machine.nombre}')
@@ -177,6 +195,7 @@ class Game:
                                            initial=True)
                 if event.key == pygame.K_r:  # Para saber si la tecla presionada fue la r para robar una ficha
                     print("Se presionó r para robar una ficha")
+                    self.player_human.first_turn = False
                     self.jugada.clear()
                     if len(self.baraja) != 0:  # Si la baraja no esta vacia
                         random = rnd.randint(0, len(self.baraja) - 1)
@@ -227,8 +246,8 @@ class Game:
                          pygame.Rect(40, 100, ANCHO - 400, ALTO - 300))
         pygame.draw.line(self.screen, (155, 155, 155), (40, ALTO - 385), (ANCHO - 365, ALTO - 385), 10)
         game_tittle = pygame.font.SysFont('Comic Sans MS', 40)
-        piece_tittle = pygame.font.SysFont('Comic Sans MS', 30)
-        win_tittle = pygame.font.SysFont('Comic Sans MS', 30)
+        piece_tittle = pygame.font.SysFont('Comic Sans MS', 20)
+        win_tittle = pygame.font.SysFont('Comic Sans MS', 20)
         draw_text('RummyQ', game_tittle, self.screen, ANCHO - 340, 40)
         draw_text(f'Player Machine: {self.player_machine.points}', piece_tittle, self.screen, ANCHO - 350, 120)
         draw_text(f'Player Human: {self.player_human.points}', piece_tittle, self.screen, ANCHO - 350, 600)
@@ -236,7 +255,6 @@ class Game:
             draw_text(f'¡Player Human Wins!', win_tittle, self.screen, ANCHO - 350, ALTO/2)
         if self.player_machine.win:
             draw_text(f'¡Player Machine Wins!', win_tittle, self.screen, ANCHO - 350, ALTO/2)
-        self.clock.tick(60)
         self.draw_pieces()
         self.draw_set_human(self.jugada_validated)
         self.draw_set_machine(self.jugada_machine)
@@ -253,6 +271,7 @@ class Game:
                 self.updating = False
             self.events()
             self.update()
+            self.clock.tick(60)
 
     # Funcion donde se crea la baraja
     def crear_baraja(self):
@@ -349,7 +368,7 @@ class Game:
             piece.x = x_set
             piece.y = y_set
             x_set += 80
-        pygame.display.flip()
+
 
     # Funcion que dibuja las piezas de la mano de un jugador maquina
     def draw_set_machine(self, jugada):
@@ -366,7 +385,7 @@ class Game:
             piece.x = x_set
             piece.y = y_set
             x_set += 80
-        pygame.display.flip()
+
 
     # Funcion que retorna una lista de las posibles jugadas en la mano de la maquina
     def get_all_possibles(self):
@@ -420,6 +439,7 @@ class Game:
                     break
             if len(temp) >= 3:
                 solution.append(temp)
+        solution.sort(key=len)  # Ordena la lista de listas por tamaño
 
         print(f'consecutivos: {lst_aux}')
         print(solution)
@@ -434,7 +454,6 @@ class Game:
     def try_possibles(self, max_depth, alpha, beta, maximin, initial):
         plays = self.get_all_possibles()  # Se obtienen las posibles jugadas
         best_play = []
-        value_play = 0
         if len(plays) == 0:  # Si no hay jugadas, entonces la maquina roba una carta
             self.robar()
         else:
@@ -459,7 +478,7 @@ class Game:
                 self.apply_best_move(best_play)
                 print(f'best_play: {best_play}')
             else:
-                return sum(best_play)
+                return best_score
 
     # Funcion para saber si todos los numeros de una lista son iguales
     def all_equals(self, lst):
@@ -474,13 +493,19 @@ class Game:
 
     # Funcion que añade las piezas correspondientes a la lista de jugadas de la maquina
     def apply_best_move(self, play):
-        if self.all_equals(play):
+        if self.player_machine.first_turn and sum(play) < 30:
+            print('La primer jugada debe sumar 30')
+            self.player_machine.first_turn = False
+            self.robar()
+        elif self.all_equals(play):
+            self.player_machine.first_turn = False
             for valor in play:
                 for piece in self.player_machine.hand:
                     if piece.value == valor:
                         self.jugada_machine.append(piece)
                         self.player_machine.hand.remove(piece)
         else:
+            self.player_machine.first_turn = False
             for valor in play:
                 for piece in self.player_machine.hand:
                     if piece.value == valor:
