@@ -251,6 +251,7 @@ class Game:
 
     # Funcion donde se crea la baraja
     def crear_baraja(self):
+        """ Crea baraja del jugador"""
         images_yellow = list()
         for valor in range(1, 14):
             images_yellow.append(pygame.image.load(os.path.join("Fichas", f"{valor}Amarillo.png")))
